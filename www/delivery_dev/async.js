@@ -230,14 +230,23 @@
                  * @param {Object} data
                  * @returns {Element}
                  */
-                createFrame: function (data) {
-                    var i = doc.createElement('IFRAME'), s = i.style;
+                createFrame: function (data, ins) {
+                    var i = doc.createElement('IFRAME'),
+                        s = i.style,
+                        a = ['autoplay'];
 
                     i.scrolling = "no";
                     i.frameBorder = 0;
-                    i.allow = "autoplay";
                     i.width = data.width > 0 ? data.width : 0;
                     i.height = data.height > 0 ? data.height : 0;
+
+                    if ("1" === ins.getAttribute(getAttribute(this.getDataAttr('allowfullscreen')))) {
+                        a.push('fullscreen');
+                    }
+
+                    i.allow = a.join('; ');
+                    i.allowFullscreen = a.indexOf('fullscreen') !== -1;
+
                     s.border = 0;
                     s.overflow = "hidden";
 
@@ -287,7 +296,7 @@
                                 var newIns = ins.cloneNode(false);
 
                                 if (d.iframeFriendly) {
-                                    var ifr = rv.createFrame(d);
+                                    var ifr = rv.createFrame(d, ins);
                                     newIns.appendChild(ifr);
                                     ins.parentNode.replaceChild(newIns, ins);
                                     rv.loadFrame(ifr, d.html);
