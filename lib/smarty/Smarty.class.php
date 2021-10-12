@@ -1253,6 +1253,9 @@ class Smarty
         // OpenX - hack to allow on-the fly compilation
         $oa_content = null;
 
+        // Revive, Smarty should be ok with warnings / notices
+        $error_reporting = error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
+
         if ($display && !$this->caching && count($this->_plugins['outputfilter']) == 0) {
             if ($this->_is_compiled($resource_name, $_smarty_compile_path)
                     || $this->_compile_resource($resource_name, $_smarty_compile_path, $oa_content))
@@ -1283,6 +1286,8 @@ class Smarty
                 $_smarty_results = call_user_func_array($_output_filter[0], array($_smarty_results, &$this));
             }
         }
+
+        error_reporting($error_reporting);
 
         if ($this->caching) {
             $_params = array('tpl_file' => $resource_name,
